@@ -3,9 +3,9 @@ package com.example.stuff.controller;
 import com.example.stuff.model.RecipeJSON;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
 
@@ -16,12 +16,12 @@ public class RecipesController {
     private static JSONObject recipeJsonObj = new RecipeJSON(new File("/Users/joannafoss/IdeaProjects/recipes-practice/data.json")).getJsonObject();
 
     @GetMapping("/")
-    public JSONObject test(){
-        return recipeJsonObj;
+    public ResponseEntity<Object> test(){
+        return new ResponseEntity<>(recipeJsonObj, HttpStatus.OK);
     }
 
     @GetMapping("/recipes")
-    public Object recipeNames() {
+    public ResponseEntity<Object> recipeNames() {
         JSONArray jsonArray = (JSONArray) recipeJsonObj.get("recipes");
 
         JSONObject namesObj = new JSONObject();
@@ -33,11 +33,11 @@ public class RecipesController {
         }
 
         namesObj.put("recipeNames", namesArray);
-        return namesObj;
+        return new ResponseEntity<>(namesObj, HttpStatus.OK);
     }
 
     @GetMapping("/recipe-ingredients/{name}")
-    public JSONObject ingredients(@PathVariable("name") String name) {
+    public ResponseEntity<Object> ingredients(@PathVariable("name") String name) {
         JSONArray jsonArray = (JSONArray) recipeJsonObj.get("recipes");
 
         JSONObject recipeDetails = new JSONObject();
@@ -54,6 +54,15 @@ public class RecipesController {
             }
         }
 
-        return recipeDetails;
+        if(recipeDetails.isEmpty()) {
+            return new ResponseEntity<>("Recipe does not exist!", HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(recipeDetails, HttpStatus.OK);
     }
+
+//    @PostMapping("/recipes")
+//    public ResponseEntity<Object> addRecipe(@RequestBody Object body) {
+//
+//    }
 }
