@@ -1,9 +1,9 @@
 package com.example.stuff.controller;
-
 import com.example.stuff.model.RecipeJSON;
-import org.apache.coyote.Response;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
