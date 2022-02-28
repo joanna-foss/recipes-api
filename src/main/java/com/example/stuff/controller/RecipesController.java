@@ -35,6 +35,7 @@ public class RecipesController {
         namesObj.put("recipeNames", namesArray);
         return namesObj;
     }
+
     @GetMapping("/recipe-ingredients/{name}")
     public JSONObject ingredients(@PathVariable("name") String name) {
         JSONArray jsonArray = (JSONArray) recipeJsonObj.get("recipes");

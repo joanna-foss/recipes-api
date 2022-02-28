@@ -2,14 +2,13 @@ package com.example.stuff.model;
 
 import lombok.Data;
 import lombok.SneakyThrows;
+
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 
 @Data
 public class RecipeJSON {
