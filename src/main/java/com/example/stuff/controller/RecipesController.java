@@ -1,6 +1,7 @@
 package com.example.stuff.controller;
 
 import com.example.stuff.model.RecipeJSON;
+import org.apache.coyote.Response;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.http.HttpStatus;
@@ -12,8 +13,8 @@ import java.io.*;
 
 @RestController
 public class RecipesController {
-
-    private static JSONObject recipeJsonObj = new RecipeJSON(new File("/Users/joannafoss/IdeaProjects/recipes-practice/data.json")).getJsonObject();
+    private static File file = new File("/Users/joannafoss/IdeaProjects/recipes-practice/data.json");
+    private static JSONObject recipeJsonObj = new RecipeJSON(file).getJsonObject();
 
     @GetMapping("/")
     public ResponseEntity<Object> test(){
@@ -61,8 +62,28 @@ public class RecipesController {
         return new ResponseEntity<>(recipeDetails, HttpStatus.OK);
     }
 
-//    @PostMapping("/recipes")
-//    public ResponseEntity<Object> addRecipe(@RequestBody Object body) {
-//
-//    }
+    @PostMapping("/recipes")
+    public ResponseEntity<Object> addRecipe(@RequestBody JSONObject body) {
+        try {
+            JSONArray recipesArray = (JSONArray) recipeJsonObj.get("recipes");
+            JSONObject newRecipesObj = new JSONObject();
+            for(int i = 0; i < recipesArray.size(); i++) {
+                JSONObject currentRecipe = new JSONObject((JSONObject) recipesArray.get(i));
+                if(currentRecipe.get("name").equals(body.get("name"))) {
+                    JSONObject response = new JSONObject();
+                    response.put("error", "Recipe already exists");
+                    return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+                }
+            }
+            recipesArray.add(body);
+            newRecipesObj.put("recipes", recipesArray);
+            FileWriter filewriter = new FileWriter(file);
+            filewriter.write(newRecipesObj.toJSONString());
+            filewriter.flush();
+            filewriter.close();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(null, null, HttpStatus.CREATED);
+    }
 }
