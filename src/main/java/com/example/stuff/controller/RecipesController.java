@@ -86,4 +86,30 @@ public class RecipesController {
         }
         return new ResponseEntity<>(null, null, HttpStatus.CREATED);
     }
+
+    @PutMapping("/recipes")
+    public ResponseEntity<Object> updateRecipe(@RequestBody JSONObject body) {
+        try {
+            JSONArray recipesArray = (JSONArray) recipeJsonObj.get("recipes");
+            JSONObject newRecipesObj = new JSONObject();
+            for(int i = 0; i < recipesArray.size(); i++) {
+                JSONObject currentRecipe = new JSONObject((JSONObject) recipesArray.get(i));
+                if(currentRecipe.get("name").equals(body.get("name"))) {
+                    recipesArray.set(i, body);
+                    newRecipesObj.put("recipes", recipesArray);
+                    FileWriter filewriter = new FileWriter(file);
+                    filewriter.write(newRecipesObj.toJSONString());
+                    filewriter.flush();
+                    filewriter.close();
+                    return new ResponseEntity<>(null, null, HttpStatus.NO_CONTENT);
+                }
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        JSONObject response = new JSONObject();
+        response.put("error", "Recipe does not exist");
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
 }
