@@ -37,7 +37,7 @@ public class RecipesController {
         return new ResponseEntity<>(namesObj, HttpStatus.OK);
     }
 
-    @GetMapping("/recipe-ingredients/{name}")
+    @GetMapping("/recipes/details/{name}")
     public ResponseEntity<Object> ingredients(@PathVariable("name") String name) {
         JSONArray jsonArray = (JSONArray) recipeJsonObj.get("recipes");
 
